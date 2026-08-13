@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Jerome Baker New York</title>
+<style>
+  :root{ --navy:#00005E; --amber:#FFAD00; --red:#FF0F17; --yellow:#FFFF00; --cream:#FFF4E0;
+         --sans:"Helvetica Neue",Arial,sans-serif; }
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  html,body{ height:100%; }
+  body{ font-family:var(--sans); background:var(--navy); color:var(--cream); }
+  #gate{ min-height:100%; display:flex; align-items:center; justify-content:center; padding:32px; }
+  .box{ width:100%; max-width:520px; }
+  .tag{ display:inline-block; background:var(--red); color:#fff; font-size:11px; font-weight:800;
+        letter-spacing:.16em; text-transform:uppercase; padding:6px 12px; }
+  h1{ font-size:clamp(38px,9vw,72px); line-height:.92; font-weight:800; letter-spacing:-.03em;
+      text-transform:uppercase; margin:16px 0 0; }
+  h1 span{ color:var(--amber); }
+  .rule{ height:6px; width:150px; background:var(--yellow); margin:20px 0 22px; }
+  p.k{ font-size:15px; line-height:1.5; opacity:.85; }
+  form{ display:flex; gap:8px; margin-top:22px; }
+  input{ flex:1; font:600 16px var(--sans); padding:13px 14px; border:0; background:var(--cream);
+         color:var(--navy); }
+  button{ font:800 14px var(--sans); letter-spacing:.1em; text-transform:uppercase; padding:13px 20px;
+          border:0; background:var(--amber); color:var(--navy); cursor:pointer; }
+  button:hover{ background:var(--yellow); }
+  .err{ color:#FF8FA3; font-size:13px; margin-top:12px; min-height:18px; font-weight:700; }
+  .foot{ margin-top:30px; font-size:10.5px; letter-spacing:.1em; text-transform:uppercase; opacity:.5; line-height:1.7; }
+  nav{ position:fixed; top:0; left:0; right:0; background:var(--navy); border-bottom:1px solid rgba(255,244,224,.2);
+       padding:10px 16px; display:none; gap:10px; align-items:center; z-index:99; }
+  nav a{ font:800 12px var(--sans); letter-spacing:.1em; text-transform:uppercase; color:var(--navy);
+         background:var(--amber); padding:8px 14px; text-decoration:none; cursor:pointer; }
+  nav a.on{ background:var(--yellow); }
+  nav span{ font-size:10.5px; letter-spacing:.1em; text-transform:uppercase; opacity:.55; margin-left:auto; }
+  #stage{ display:none; padding-top:46px; }
+  #stage iframe{ display:block; width:100%; border:0; }
+</style>
+</head>
+<body>
+
+<div id="gate">
+  <div class="box">
+    <span class="tag">Confidential · Access required</span>
+    <h1>Jerome<br><span>Baker</span></h1>
+    <div class="rule"></div>
+    <p class="k">$500,000 secured convertible note — to scale New York and open the second state.
+      Enter the passphrase to view the presentation.</p>
+    <form id="f" autocomplete="off">
+      <input id="pw" type="password" placeholder="Passphrase" autofocus>
+      <button type="submit">Enter</button>
+    </form>
+    <div class="err" id="err"></div>
+    <div class="foot">
+      Prepared for evaluation only · Not for distribution<br>
+      Indicative terms only — not an offer to sell securities<br>
+      David Zelinger · david@canismajorpartners.com
+    </div>
+  </div>
+</div>
+
+<nav id="nav">
+  <a data-doc="pitch" class="on">6-minute pitch</a>
+  <a data-doc="deck">Full deck</a>
+  <span>Confidential · Jerome Baker New York</span>
+</nav>
+<div id="stage"><iframe id="frame" title="Presentation"></iframe></div>
+
+<script>
+const cache = {};
+const b64 = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+
+async function unlock(doc, passphrase){
+  if (cache[doc]) return cache[doc];
+  const meta = await (await fetch(doc + '.enc.json', {cache:'no-store'})).json();
+  const base = await crypto.subtle.importKey('raw', new TextEncoder().encode(passphrase), 'PBKDF2', false, ['deriveKey']);
+  const key = await crypto.subtle.deriveKey(
+    {name:'PBKDF2', salt:b64(meta.salt), iterations:meta.iter, hash:'SHA-256'},
+    base, {name:'AES-GCM', length:256}, false, ['decrypt']);
+  const plain = await crypto.subtle.decrypt({name:'AES-GCM', iv:b64(meta.nonce)}, key, b64(meta.ct));
+  cache[doc] = new TextDecoder().decode(plain);
+  return cache[doc];
+}
+
+function show(html){
+  const f = document.getElementById('frame');
+  f.srcdoc = html;
+  f.onload = () => {
+    try {
+      const d = f.contentDocument;
+      f.style.height = Math.max(d.body.scrollHeight, d.documentElement.scrollHeight) + 'px';
+    } catch(e){}
+  };
+}
+
+let pass = null;
+document.getElementById('f').addEventListener('submit', async e => {
+  e.preventDefault();
+  const err = document.getElementById('err');
+  const val = document.getElementById('pw').value;
+  err.textContent = 'Decrypting…';
+  try {
+    const html = await unlock('pitch', val);
+    pass = val;
+    err.textContent = '';
+    document.getElementById('gate').style.display = 'none';
+    document.getElementById('nav').style.display = 'flex';
+    document.getElementById('stage').style.display = 'block';
+    show(html);
+  } catch (_) {
+    err.textContent = 'Incorrect passphrase.';
+  }
+});
+
+document.querySelectorAll('nav a').forEach(a => a.addEventListener('click', async e => {
+  e.preventDefault();
+  document.querySelectorAll('nav a').forEach(x => x.classList.remove('on'));
+  a.classList.add('on');
+  show(await unlock(a.dataset.doc, pass));
+}));
+</script>
+</body>
+</html>
