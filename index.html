@@ -2,124 +2,230 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow, noarchive">
+<meta name="theme-color" content="#00005E">
 <title>Jerome Baker New York</title>
 <link rel="icon" href="favicon.png">
 <style>
   :root{ --navy:#00005E; --amber:#FFAD00; --red:#FF0F17; --yellow:#FFFF00; --cream:#FFF4E0;
-         --sans:"Helvetica Neue",Arial,sans-serif; }
+         --sans:"Helvetica Neue",Arial,sans-serif; --bar:52px; }
   *{ box-sizing:border-box; margin:0; padding:0; }
-  html,body{ height:100%; }
-  body{ font-family:var(--sans); background:var(--navy); color:var(--cream); }
-  #gate{ min-height:100%; display:flex; align-items:center; justify-content:center; padding:32px; }
+  html{ -webkit-text-size-adjust:100%; }
+  html,body{ min-height:100%; }
+  body{ font-family:var(--sans); background:var(--navy); color:var(--cream);
+        overflow-x:hidden; overscroll-behavior-x:none; }
+
+  /* ---------- gate ---------- */
+  #gate{ min-height:100vh; min-height:100svh; display:flex; align-items:center; justify-content:center;
+         padding:28px 22px calc(28px + env(safe-area-inset-bottom)); }
   .box{ width:100%; max-width:520px; }
-  .tag{ display:inline-block; background:var(--red); color:#fff; font-size:11px; font-weight:800;
-        letter-spacing:.16em; text-transform:uppercase; padding:6px 12px; }
-  h1{ font-size:clamp(38px,9vw,72px); line-height:.92; font-weight:800; letter-spacing:-.03em;
+  .tag{ display:inline-block; background:var(--red); color:#fff; font-size:10.5px; font-weight:800;
+        letter-spacing:.14em; text-transform:uppercase; padding:6px 11px; }
+  h1{ font-size:clamp(40px,13vw,72px); line-height:.92; font-weight:800; letter-spacing:-.03em;
       text-transform:uppercase; margin:16px 0 0; }
   h1 span{ color:var(--amber); }
-  .rule{ height:6px; width:150px; background:var(--yellow); margin:20px 0 22px; }
+  .rule{ height:6px; width:min(150px,40vw); background:var(--yellow); margin:18px 0 20px; }
   p.k{ font-size:15px; line-height:1.5; opacity:.85; }
-  form{ display:flex; gap:8px; margin-top:22px; }
-  input{ flex:1; font:600 16px var(--sans); padding:13px 14px; border:0; background:var(--cream);
-         color:var(--navy); }
-  button{ font:800 14px var(--sans); letter-spacing:.1em; text-transform:uppercase; padding:13px 20px;
-          border:0; background:var(--amber); color:var(--navy); cursor:pointer; }
-  button:hover{ background:var(--yellow); }
+  form{ display:flex; flex-wrap:wrap; gap:8px; margin-top:20px; }
+  input{ flex:1 1 190px; min-width:0; font:600 16px var(--sans); padding:14px; border:0;
+         background:var(--cream); color:var(--navy); border-radius:0; -webkit-appearance:none; }
+  form button{ flex:0 0 auto; font:800 14px var(--sans); letter-spacing:.1em; text-transform:uppercase;
+               padding:14px 22px; border:0; background:var(--amber); color:var(--navy); cursor:pointer; }
+  form button:hover{ background:var(--yellow); }
   .err{ color:#FF8FA3; font-size:13px; margin-top:12px; min-height:18px; font-weight:700; }
-  .foot{ margin-top:30px; font-size:10.5px; letter-spacing:.1em; text-transform:uppercase; opacity:.5; line-height:1.7; }
-  nav{ position:fixed; top:0; left:0; right:0; background:var(--navy); border-bottom:1px solid rgba(255,244,224,.2);
-       padding:10px 16px; display:none; gap:10px; align-items:center; z-index:99; }
-  nav a{ font:800 12px var(--sans); letter-spacing:.1em; text-transform:uppercase; color:var(--navy);
-         background:var(--amber); padding:8px 14px; text-decoration:none; cursor:pointer; }
+  .foot{ margin-top:28px; font-size:10.5px; letter-spacing:.09em; text-transform:uppercase; opacity:.5; line-height:1.75; }
+
+  /* ---------- viewer chrome ---------- */
+  nav{ position:fixed; top:0; left:0; right:0; z-index:99; background:var(--navy);
+       border-bottom:1px solid rgba(255,244,224,.22); display:none; align-items:center; gap:7px;
+       padding:9px 12px; min-height:var(--bar); }
+  nav a{ font:800 12px var(--sans); letter-spacing:.09em; text-transform:uppercase; color:var(--navy);
+         background:var(--amber); padding:9px 13px; text-decoration:none; cursor:pointer;
+         white-space:nowrap; -webkit-tap-highlight-color:transparent; }
   nav a.on{ background:var(--yellow); }
-  nav span{ font-size:10.5px; letter-spacing:.1em; text-transform:uppercase; opacity:.55; margin-left:auto; }
-  #stage{ display:none; padding-top:46px; }
-  #stage iframe{ display:block; width:100%; border:0; }
+  nav button{ font:800 11px var(--sans); letter-spacing:.09em; text-transform:uppercase; cursor:pointer;
+              padding:9px 12px; border:1px solid rgba(255,244,224,.5); background:transparent;
+              color:var(--cream); white-space:nowrap; }
+  nav .sp{ margin-left:auto; }
+  nav .brand{ font-size:10px; letter-spacing:.1em; text-transform:uppercase; opacity:.5; white-space:nowrap; }
+  #rvtools{ display:none; gap:7px; }
+
+  #stage{ display:none; padding-top:var(--bar); }
+  #wrap{ position:relative; overflow:hidden; }
+  #frame{ display:block; border:0; width:1280px; transform-origin:top left; background:var(--navy); }
+  body.actual{ overflow-x:auto; }
+  body.actual #stage{ width:1280px; }
+
+  #hint{ display:none; position:fixed; left:0; right:0; bottom:0; z-index:98; background:rgba(0,0,94,.94);
+         border-top:1px solid rgba(255,244,224,.2); color:var(--cream); font-size:11px; letter-spacing:.05em;
+         padding:9px 14px calc(9px + env(safe-area-inset-bottom)); text-align:center; }
+  #hint b{ color:var(--amber); }
+
+  @media (max-width:720px){
+    nav{ gap:5px; padding:8px 9px; }
+    nav a{ padding:9px 10px; font-size:11px; letter-spacing:.06em; }
+    nav .brand{ display:none; }
+  }
 </style>
 </head>
 <body>
 
 <div id="gate">
   <div class="box">
-    <span class="tag">Confidential · Access required</span>
+    <span class="tag">Confidential &middot; Access required</span>
     <h1>Jerome<br><span>Baker</span></h1>
     <div class="rule"></div>
     <p class="k">Confidential investor presentation. Enter the passphrase to view.</p>
     <form id="f" autocomplete="off">
-      <input id="pw" type="password" placeholder="Passphrase" autofocus>
+      <input id="pw" type="password" placeholder="Passphrase" autocomplete="current-password"
+             autocapitalize="off" autocorrect="off" spellcheck="false">
       <button type="submit">Enter</button>
     </form>
     <div class="err" id="err"></div>
     <div class="foot">
-      Prepared for evaluation only · Not for distribution<br>
-      Indicative terms only — not an offer to sell securities<br>
-      David Zelinger · david@canismajorpartners.com
+      Prepared for evaluation only &middot; Not for distribution<br>
+      Indicative terms only &mdash; not an offer to sell securities<br>
+      David Zelinger &middot; david@canismajorpartners.com
     </div>
   </div>
 </div>
 
 <nav id="nav">
-  <a data-doc="pitch" class="on">6-minute pitch</a>
-  <a data-doc="deck">Full deck</a>
-  <a data-doc="review">Full deck — review mode</a>
-  <span>Confidential · Jerome Baker New York</span>
+  <a data-doc="pitch" data-short="Pitch" class="on">6-minute pitch</a>
+  <a data-doc="deck" data-short="Deck">Full deck</a>
+  <a data-doc="review" data-short="Review">Full deck &mdash; review mode</a>
+  <span class="sp"></span>
+  <span id="rvtools">
+    <button id="rvexport2">Export</button>
+    <button id="rvclear2">Clear</button>
+  </span>
+  <button id="zoom">Fit</button>
+  <span class="brand">Confidential &middot; Jerome Baker New York</span>
 </nav>
-<div id="stage"><iframe id="frame" title="Presentation"></iframe></div>
+
+<div id="stage"><div id="wrap"><iframe id="frame" title="Presentation" scrolling="no"></iframe></div></div>
+<div id="hint">Landscape or <b>100%</b> reads best &mdash; pinch to zoom any slide.</div>
 
 <script>
-const cache = {};
-const b64 = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+var SLIDE_W = 1280;                    // slides are 13.333in wide = 1280 CSS px
+var cache = {};
+var frame = document.getElementById('frame');
+var wrap  = document.getElementById('wrap');
+var stage = document.getElementById('stage');
+var actual = false;                    // false = fit to width, true = 1:1
+var pass = null, current = 'pitch';
+
+function b64(s){ return Uint8Array.from(atob(s), function(c){ return c.charCodeAt(0); }); }
 
 async function unlock(doc, passphrase){
   if (cache[doc]) return cache[doc];
-  const meta = await (await fetch(doc + '.enc.json', {cache:'no-store'})).json();
-  const base = await crypto.subtle.importKey('raw', new TextEncoder().encode(passphrase), 'PBKDF2', false, ['deriveKey']);
-  const key = await crypto.subtle.deriveKey(
+  var meta = await (await fetch(doc + '.enc.json', {cache:'no-store'})).json();
+  var base = await crypto.subtle.importKey('raw', new TextEncoder().encode(passphrase), 'PBKDF2', false, ['deriveKey']);
+  var key = await crypto.subtle.deriveKey(
     {name:'PBKDF2', salt:b64(meta.salt), iterations:meta.iter, hash:'SHA-256'},
     base, {name:'AES-GCM', length:256}, false, ['decrypt']);
-  const plain = await crypto.subtle.decrypt({name:'AES-GCM', iv:b64(meta.nonce)}, key, b64(meta.ct));
+  var plain = await crypto.subtle.decrypt({name:'AES-GCM', iv:b64(meta.nonce)}, key, b64(meta.ct));
   cache[doc] = new TextDecoder().decode(plain);
   return cache[doc];
 }
 
-function show(html){
-  const f = document.getElementById('frame');
-  f.srcdoc = html;
-  f.onload = () => {
-    try {
-      const d = f.contentDocument;
-      f.style.height = Math.max(d.body.scrollHeight, d.documentElement.scrollHeight) + 'px';
-    } catch(e){}
-  };
+/* The deck is 1280px of hard-set inches. Without scaling it simply overflows a phone,
+   so fit it to whatever width the device actually has. */
+function fit(){
+  var d = frame.contentDocument;
+  if (!d || !d.body) return;
+  // Collapse first: documentElement.scrollHeight never reports less than the iframe's own
+  // height, so going from the 29-slide deck to the 9-slide pitch would keep the taller
+  // measurement and leave thousands of pixels of empty scroll behind.
+  frame.style.height = '0px';
+  var h = Math.max(d.body.scrollHeight, d.documentElement.scrollHeight);
+  frame.style.height = h + 'px';
+  var avail = document.documentElement.clientWidth;
+  var s = actual ? 1 : Math.min(1, avail / SLIDE_W);
+  frame.style.transform = 'scale(' + s + ')';
+  wrap.style.height = Math.ceil(h * s) + 'px';
+  document.body.className = (actual && avail < SLIDE_W) ? 'actual' : '';
 }
 
-let pass = null;
-document.getElementById('f').addEventListener('submit', async e => {
+function show(html){
+  frame.srcdoc = html;
+  frame.onload = function(){ fit(); setTimeout(fit, 300); };   // second pass once images land
+}
+
+document.getElementById('f').addEventListener('submit', async function(e){
   e.preventDefault();
-  const err = document.getElementById('err');
-  const val = document.getElementById('pw').value;
+  var err = document.getElementById('err');
+  var val = document.getElementById('pw').value;
   err.textContent = 'Decrypting…';
   try {
-    const html = await unlock('pitch', val);
+    var html = await unlock('pitch', val);
     pass = val;
     err.textContent = '';
     document.getElementById('gate').style.display = 'none';
     document.getElementById('nav').style.display = 'flex';
-    document.getElementById('stage').style.display = 'block';
+    stage.style.display = 'block';
+    if (document.documentElement.clientWidth < SLIDE_W){
+      var hint = document.getElementById('hint');
+      hint.style.display = 'block';
+      setTimeout(function(){ hint.style.display = 'none'; }, 6000);
+    }
     show(html);
   } catch (_) {
     err.textContent = 'Incorrect passphrase.';
   }
 });
 
-document.querySelectorAll('nav a').forEach(a => a.addEventListener('click', async e => {
-  e.preventDefault();
-  document.querySelectorAll('nav a').forEach(x => x.classList.remove('on'));
-  a.classList.add('on');
-  show(await unlock(a.dataset.doc, pass));
-}));
+var links = document.querySelectorAll('nav a');
+for (var i = 0; i < links.length; i++){
+  links[i].dataset.long = links[i].textContent;
+  links[i].addEventListener('click', async function(e){
+    e.preventDefault();
+    for (var j = 0; j < links.length; j++) links[j].classList.remove('on');
+    this.classList.add('on');
+    current = this.dataset.doc;
+    document.getElementById('rvtools').style.display = (current === 'review') ? 'flex' : 'none';
+    // A comment box is 270px wide; scaled to fit a phone that is ~80px and untypeable.
+    // Review mode therefore opens at 1:1 on small screens and pans instead.
+    setZoom(current === 'review' && document.documentElement.clientWidth < SLIDE_W);
+    window.scrollTo(0, 0);
+    show(await unlock(current, pass));
+  });
+}
+
+/* Review mode's toolbar lives inside the iframe, which is as tall as the entire deck,
+   so its position:fixed bar scrolls away on the first swipe. Drive it from the parent. */
+function inFrame(id){ return frame.contentDocument && frame.contentDocument.getElementById(id); }
+document.getElementById('rvexport2').onclick = function(){ var b = inFrame('rvexport'); if (b) b.click(); };
+document.getElementById('rvclear2').onclick  = function(){ var b = inFrame('rvclear');  if (b) b.click(); };
+
+function setZoom(on){
+  actual = on;
+  document.getElementById('zoom').textContent = on ? '100%' : 'Fit';
+  fit();
+}
+
+document.getElementById('zoom').onclick = function(){
+  setZoom(!actual);
+  window.scrollTo(0, 0);
+};
+
+function relabel(){
+  var narrow = document.documentElement.clientWidth < 720;
+  for (var j = 0; j < links.length; j++){
+    links[j].textContent = narrow ? links[j].dataset.short : links[j].dataset.long;
+  }
+}
+relabel();
+
+var t;
+window.addEventListener('resize', function(){
+  clearTimeout(t);
+  t = setTimeout(function(){ relabel(); fit(); }, 90);
+});
+window.addEventListener('orientationchange', function(){
+  setTimeout(function(){ relabel(); fit(); }, 220);
+});
 </script>
 </body>
 </html>
